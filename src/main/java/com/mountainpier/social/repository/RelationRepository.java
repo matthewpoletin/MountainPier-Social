@@ -4,6 +4,6 @@ import com.mountainpier.social.domain.Relations;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FriendshipRepository
+public interface RelationRepository
 	extends JpaRepository<Relations, Integer> {
 }

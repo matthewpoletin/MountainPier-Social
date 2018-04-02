@@ -9,7 +9,8 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class UserResponse {
-	private Integer id;
+
+	private String id;
 	private String username;
 	private String avatar;
 	private String regEmail;
@@ -18,7 +19,7 @@ public class UserResponse {
 	private Date birthDate;
 
 	public UserResponse(User user) {
-		this.id = user.getId();
+		this.id = user.getId().toString();
 		this.username = user.getUsername();
 		this.avatar = user.getAvatar();
 		this.regEmail = user.getRegEmail();

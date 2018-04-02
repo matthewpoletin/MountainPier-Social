@@ -11,9 +11,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.EntityNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -46,15 +47,15 @@ public class UserServiceImpl implements UserService {
 			.setRegEmail(userRequest.getRegEmail())
 			.setRegDate(userRequest.getRegDate())
 			.setBirthDate(userRequest.getBirthDate())
-			.setStatus(userRequest.getStatus());
+			.setStatus(userRequest.getStatus())
+			.setId(UUID.randomUUID());
 		return userRepository.save(user);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public User getUserById(Integer userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> new EntityNotFoundException("User '{" + userId + "}' not found"));
+	public User getUserById(UUID userId) {
+		return userRepository.getUserById(userId);
 	}
 	
 	@Override
@@ -71,7 +72,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public User updateUserById(Integer userId, UserRequest userRequest) {
+	public User updateUserById(UUID userId, UserRequest userRequest) {
 		User user = this.getUserById(userId);
 		user.setUsername(userRequest.getUsername() != null ? userRequest.getUsername() : user.getUsername());
 		user.setAvatar(userRequest.getAvatar() != null ? userRequest.getAvatar() : user.getAvatar());
@@ -84,13 +85,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void deleteUserById(Integer userId) {
-		userRepository.deleteById(userId);
+	public void deleteUserById(UUID userId) {
+		userRepository.deleteUserById(userId);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Page<User> getFriendsOfUserById(Integer userId, Integer page, Integer size) {
+	public Page<User> getFriendsOfUserById(UUID userId, Integer page, Integer size) {
 		User user = this.getUserById(userId);
 		List<Relations> relations = user.getRelated();
 		List<User> friends = new ArrayList<>();
@@ -98,7 +99,8 @@ public class UserServiceImpl implements UserService {
 			if (relation.getType().equals("friend"))
 				friends.add(relation.getUserB());
 		});
-		return new PageImpl<User>(friends, new PageRequest(page, size), friends.size());
+		// TODO:
+		return new PageImpl<>(friends, new PageRequest(page, size), friends.size());
 	}
 	
 }

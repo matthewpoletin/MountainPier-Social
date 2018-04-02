@@ -2,10 +2,13 @@ package com.mountainpier.social.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -15,9 +18,13 @@ public class User {
 	
 	@Id
 	@Column(name = "users_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
+	@GeneratedValue(generator = "uuid2", strategy = GenerationType.IDENTITY)
+	@GenericGenerator(
+		name = "uuid2",
+		strategy = "org.hibernate.id.UUIDGenerator"
+	)
+	private UUID id;
+	
 	// TODO: Make unique case-insensitive
 	@Column(name = "users_username", unique = true)
 	private String username;
@@ -25,7 +32,7 @@ public class User {
 	@Column(name = "users_avatar")
 	private String avatar;
 	
-	@Column(name = "users_reg_email")
+	@Column(name = "users_reg_email", unique = true)
 	private String regEmail;
 	
 	@Column(name = "users_reg_date")

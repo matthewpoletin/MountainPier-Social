@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(UserController.userBaseURI)
@@ -44,13 +45,13 @@ public class UserController {
 	public UserResponse createUser(@Valid @RequestBody UserRequest userRequest,
 								   HttpServletResponse response) {
 		User user = userService.createUser(userRequest);
-		response.addHeader(HttpHeaders.LOCATION, userBaseURI + "/users/" + user.getId());
+		response.addHeader(HttpHeaders.LOCATION, userBaseURI + "/users/" + user.getId().toString());
 		return new UserResponse(user);
 	}
 
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
-	public UserResponse getUserById(@PathVariable("userId") final Integer userId) {
-		return new UserResponse(userService.getUserById(userId));
+	public UserResponse getUserById(@PathVariable("userId") final String userId) {
+		return new UserResponse(userService.getUserById(UUID.fromString(userId)));
 	}
 	
 	@RequestMapping(value = "/users/by", method = RequestMethod.GET)
@@ -76,24 +77,24 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.PATCH)
-	public UserResponse updateUser(@PathVariable("userId") final Integer userId,
-								   @Valid @RequestBody UserRequest userRequest) {
-		return new UserResponse(userService.updateUserById(userId, userRequest));
+	public UserResponse updateUser(@PathVariable("userId") final String userId,
+								   @RequestBody @Valid UserRequest userRequest) {
+		return new UserResponse(userService.updateUserById(UUID.fromString(userId), userRequest));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
-	public void deleteUser(@PathVariable("userId") final Integer userId) {
-		userService.deleteUserById(userId);
+	public void deleteUser(@PathVariable("userId") final String userId) {
+		userService.deleteUserById(UUID.fromString(userId));
 	}
 	
 	@RequestMapping(value = "/users/{userId}/friends", method = RequestMethod.GET)
-	public Page<UserResponse> GetFriendsOfUserById(@PathVariable("userId") final Integer userId,
+	public Page<UserResponse> GetFriendsOfUserById(@PathVariable("userId") final String userId,
 	                                               @RequestParam(value = "page", required = false) Integer page,
 	                                               @RequestParam(value = "size", required = false) Integer size) {
 		page = page != null ? page : 0;
 		size = size != null ? size : 25;
-		return userService.getFriendsOfUserById(userId, page, size)
+		return userService.getFriendsOfUserById(UUID.fromString(userId), page, size)
 			.map(UserResponse::new);
 	}
 	
