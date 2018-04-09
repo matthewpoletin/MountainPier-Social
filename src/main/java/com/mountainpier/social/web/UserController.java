@@ -50,8 +50,8 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
-	public UserResponse getUserById(@PathVariable("userId") final String userId) {
-		return new UserResponse(userService.getUserById(UUID.fromString(userId)));
+	public UserResponse getUserById(@PathVariable("userId") final UUID userId) {
+		return new UserResponse(userService.getUserById(userId));
 	}
 	
 	@RequestMapping(value = "/users/by", method = RequestMethod.GET)
@@ -77,24 +77,24 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.PATCH)
-	public UserResponse updateUser(@PathVariable("userId") final String userId,
+	public UserResponse updateUser(@PathVariable("userId") final UUID userId,
 								   @RequestBody @Valid UserRequest userRequest) {
-		return new UserResponse(userService.updateUserById(UUID.fromString(userId), userRequest));
+		return new UserResponse(userService.updateUserById(userId, userRequest));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
-	public void deleteUser(@PathVariable("userId") final String userId) {
-		userService.deleteUserById(UUID.fromString(userId));
+	public void deleteUser(@PathVariable("userId") final UUID userId) {
+		userService.deleteUserById(userId);
 	}
 	
 	@RequestMapping(value = "/users/{userId}/friends", method = RequestMethod.GET)
-	public Page<UserResponse> GetFriendsOfUserById(@PathVariable("userId") final String userId,
-	                                               @RequestParam(value = "page", required = false) Integer page,
-	                                               @RequestParam(value = "size", required = false) Integer size) {
+	public Page<UserResponse> getFriendsOfUserById(@PathVariable("userId") final UUID userId,
+												   @RequestParam(value = "page", required = false) Integer page,
+												   @RequestParam(value = "size", required = false) Integer size) {
 		page = page != null ? page : 0;
 		size = size != null ? size : 25;
-		return userService.getFriendsOfUserById(UUID.fromString(userId), page, size)
+		return userService.getFriendsOfUserById(userId, page, size)
 			.map(UserResponse::new);
 	}
 	

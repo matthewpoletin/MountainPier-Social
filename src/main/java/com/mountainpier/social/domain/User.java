@@ -32,6 +32,7 @@ public class User {
 	@Column(name = "users_avatar")
 	private String avatar;
 	
+	// TODO: Make unique case-insensitive
 	@Column(name = "users_reg_email", unique = true)
 	private String regEmail;
 	
