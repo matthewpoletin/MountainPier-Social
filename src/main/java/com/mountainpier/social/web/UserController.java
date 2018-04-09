@@ -1,6 +1,7 @@
 package com.mountainpier.social.web;
 
 import com.mountainpier.social.domain.User;
+import com.mountainpier.social.service.CollectionServiceImpl;
 import com.mountainpier.social.service.UserServiceImpl;
 import com.mountainpier.social.web.model.UserRequest;
 import com.mountainpier.social.web.model.UserResponse;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,10 +23,13 @@ public class UserController {
 	static final String userBaseURI = "/api/social";
 
 	private final UserServiceImpl userService;
+	private final CollectionServiceImpl collectionService;
 	
 	@Autowired
-	UserController(UserServiceImpl userService) {
+	UserController(UserServiceImpl userService,
+				   CollectionServiceImpl collectionService) {
 		this.userService = userService;
+		this.collectionService = collectionService;
 	}
 	
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
@@ -96,6 +101,30 @@ public class UserController {
 		size = size != null ? size : 25;
 		return userService.getFriendsOfUserById(userId, page, size)
 			.map(UserResponse::new);
+	}
+	
+	@RequestMapping(value = "/users/{userId}/games", method = RequestMethod.GET)
+	public List<UUID> getGamesOfUserById(@PathVariable("userId") final UUID userId,
+										 @RequestParam(value = "page", required = false) Integer page,
+										 @RequestParam(value = "size", required = false) Integer size) {
+		page = page != null ? page : 0;
+		size = size != null ? size : 25;
+		return this.userService.getGamesOfUserById(userId);
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/users/{userId}/games/{gameId}", method = RequestMethod.POST)
+	public void addGameByIdToUserById(@PathVariable("userId") final UUID userId,
+									  @PathVariable("gameId") final UUID gameId) {
+		User user = this.userService.getUserById(userId);
+		this.collectionService.addGameByIdToUser(gameId, user);
+	}
+	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@RequestMapping(value = "/users/{userId}/games/{gameId}", method = RequestMethod.DELETE)
+	public void removeGameByIdFromUserById(@PathVariable("userId") final UUID userId,
+										   @PathVariable("gameId") final UUID gameId) {
+		this.collectionService.removeGameByIdFromUserById(gameId, userId);
 	}
 	
 }

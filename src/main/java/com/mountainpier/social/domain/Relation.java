@@ -2,7 +2,6 @@ package com.mountainpier.social.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -10,7 +9,7 @@ import java.util.Date;
 @Entity
 @Accessors(chain = true)
 @Table(name = "relations", schema = "public")
-public class Relations {
+public class Relation {
 	
 	@Id
 	@Column(name = "relations_id")

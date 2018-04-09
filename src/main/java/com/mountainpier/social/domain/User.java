@@ -3,7 +3,6 @@ package com.mountainpier.social.domain;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,10 +45,12 @@ public class User {
 	private Date birthDate;
 	
 	@OneToMany(mappedBy = "userA", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Relations> related = new ArrayList<>();
+	private List<Relation> related = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "userB", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Relations> relating = new ArrayList<>();
+	private List<Relation> relating = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Collection> collections = new ArrayList<>();
 	
 }

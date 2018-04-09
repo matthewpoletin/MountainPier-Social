@@ -4,6 +4,8 @@ import com.mountainpier.social.domain.User;
 import com.mountainpier.social.web.model.UserRequest;
 
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
@@ -17,4 +19,6 @@ public interface UserService {
 	void deleteUserById(UUID userId);
 	
 	Page<User> getFriendsOfUserById(UUID userId, Integer page, Integer size);
+	
+	List<UUID> getGamesOfUserById(UUID userId);
 }

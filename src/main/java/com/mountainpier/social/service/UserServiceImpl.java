@@ -1,7 +1,9 @@
 package com.mountainpier.social.service;
 
-import com.mountainpier.social.domain.Relations;
+import com.mountainpier.social.domain.Collection;
+import com.mountainpier.social.domain.Relation;
 import com.mountainpier.social.domain.User;
+import com.mountainpier.social.repository.CollectionRepository;
 import com.mountainpier.social.repository.UserRepository;
 import com.mountainpier.social.web.model.UserRequest;
 
@@ -20,10 +22,12 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 	
 	private final UserRepository userRepository;
+	private final CollectionRepository collectionRepository;
 	
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository) {
+	public UserServiceImpl(UserRepository userRepository, CollectionRepository collectionRepository) {
 		this.userRepository = userRepository;
+		this.collectionRepository = collectionRepository;
 	}
 	
 	@Override
@@ -47,8 +51,7 @@ public class UserServiceImpl implements UserService {
 			.setRegEmail(userRequest.getRegEmail())
 			.setRegDate(userRequest.getRegDate())
 			.setBirthDate(userRequest.getBirthDate())
-			.setStatus(userRequest.getStatus())
-			.setId(UUID.randomUUID());
+			.setStatus(userRequest.getStatus());
 		return userRepository.save(user);
 	}
 	
@@ -93,14 +96,24 @@ public class UserServiceImpl implements UserService {
 	@Transactional(readOnly = true)
 	public Page<User> getFriendsOfUserById(UUID userId, Integer page, Integer size) {
 		User user = this.getUserById(userId);
-		List<Relations> relations = user.getRelated();
+		List<Relation> relations = user.getRelated();
 		List<User> friends = new ArrayList<>();
 		relations.forEach(relation -> {
 			if (relation.getType().equals("friend"))
 				friends.add(relation.getUserB());
 		});
-		// TODO:
-		return new PageImpl<>(friends, new PageRequest(page, size), friends.size());
+		return new PageImpl<>(friends, PageRequest.of(page, size), friends.size());
+	}
+	
+	@Override
+	public List<UUID> getGamesOfUserById(UUID userId) {
+		User user = this.getUserById(userId);
+		List<Collection> collections = this.collectionRepository.findCollectionsByUser(user);
+		List<UUID> gamesUuid = new ArrayList<>();
+		collections.forEach(collection -> {
+			gamesUuid.add(collection.getGameId());
+		});
+		return gamesUuid;
 	}
 	
 }
