@@ -2,12 +2,12 @@ package com.mountainpier.social.service;
 
 import com.mountainpier.social.domain.User;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 import java.util.UUID;
 
 public interface CollectionService {
 	
-	List<User> getOwnersOfGameById(UUID gameId, Integer page, Integer size);
+	Page<User> getOwnersOfGameById(UUID gameId, Integer page, Integer size);
 	
 	void addGameByIdToUser(UUID gameId, User user);
 	

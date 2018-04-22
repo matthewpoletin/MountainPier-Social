@@ -2,10 +2,13 @@ package com.mountainpier.social.service;
 
 import com.mountainpier.social.domain.Collection;
 import com.mountainpier.social.domain.User;
-
 import com.mountainpier.social.repository.CollectionRepository;
 import com.mountainpier.social.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -26,16 +29,15 @@ public class CollectionServiceImpl implements CollectionService {
 		this.userRepository = userRepository;
 	}
 	
-	// TODO: switch to paginated response
 	@Override
 	@Transactional(readOnly = true)
-	public List<User> getOwnersOfGameById(UUID gameId, Integer page, Integer size) {
+	public Page<User> getOwnersOfGameById(UUID gameId, Integer page, Integer size) {
 		List<Collection> collections = this.collectionRepository.findCollectionsByGameId(gameId);
-		List<User> users = new ArrayList<>();
+		List<User> usersList = new ArrayList<>();
 		collections.forEach(collection -> {
-			users.add(collection.getUser());
+			usersList.add(collection.getUser());
 		});
-		return users;
+		return new PageImpl<>(usersList, PageRequest.of(page, size), usersList.size());
 	}
 	
 	@Override
