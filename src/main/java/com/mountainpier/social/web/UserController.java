@@ -1,8 +1,8 @@
 package com.mountainpier.social.web;
 
 import com.mountainpier.social.domain.User;
-import com.mountainpier.social.service.CollectionServiceImpl;
-import com.mountainpier.social.service.UserServiceImpl;
+import com.mountainpier.social.service.CollectionService;
+import com.mountainpier.social.service.UserService;
 import com.mountainpier.social.web.model.UserRequest;
 import com.mountainpier.social.web.model.UserResponse;
 
@@ -22,12 +22,12 @@ public class UserController {
 
 	static final String userBaseURI = "/api/social";
 
-	private final UserServiceImpl userService;
-	private final CollectionServiceImpl collectionService;
+	private final UserService userService;
+	private final CollectionService collectionService;
 	
 	@Autowired
-	UserController(UserServiceImpl userService,
-				   CollectionServiceImpl collectionService) {
+	UserController(UserService userService,
+				   CollectionService collectionService) {
 		this.userService = userService;
 		this.collectionService = collectionService;
 	}

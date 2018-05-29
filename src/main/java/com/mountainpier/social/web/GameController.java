@@ -1,7 +1,7 @@
 package com.mountainpier.social.web;
 
 
-import com.mountainpier.social.service.CollectionServiceImpl;
+import com.mountainpier.social.service.CollectionService;
 import com.mountainpier.social.web.model.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,10 +15,10 @@ public class GameController {
 	
 	static final String gameBaseURI = "/api/social";
 	
-	private final CollectionServiceImpl collectionService;
+	private final CollectionService collectionService;
 	
 	@Autowired
-	GameController(CollectionServiceImpl collectionService) {
+	GameController(CollectionService collectionService) {
 		this.collectionService = collectionService;
 	}
 	
