@@ -3,6 +3,7 @@ package com.mountainpier.social.web;
 import com.mountainpier.social.domain.User;
 import com.mountainpier.social.service.CollectionService;
 import com.mountainpier.social.service.UserService;
+import com.mountainpier.social.web.model.RelationResponse;
 import com.mountainpier.social.web.model.UserRequest;
 import com.mountainpier.social.web.model.UserResponse;
 
@@ -105,16 +106,22 @@ public class UserController {
 	
 	@RequestMapping(value = "/users/{userId}/friends/{friendId}", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addFriendByIdToUserById(@PathVariable("userId") final UUID userId,
-										@PathVariable("friendId") final UUID friendId) {
-		this.userService.addFriendByIdToUserById(userId, friendId);
+	public RelationResponse addFriendByIdToUserById(@PathVariable("userId") final UUID userId,
+													@PathVariable("friendId") final UUID friendId) {
+		return new RelationResponse(this.userService.addFriendByIdToUserById(userId, friendId));
 	}
 	
 	@RequestMapping(value = "/users/{userId}/friends/{friendId}", method = RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void removeFriendByIdToUserById(@PathVariable("userId") final UUID userId,
-										@PathVariable("friendId") final UUID friendId) {
+										   @PathVariable("friendId") final UUID friendId) {
 		this.userService.removeFriendByIdToUserById(userId, friendId);
+	}
+	
+	@RequestMapping(value = "/users/{userAId}/relation/{userBId}", method = RequestMethod.GET)
+	public RelationResponse getRelationOfUsers(@PathVariable("userAId") final UUID userAId,
+											   @PathVariable("userBId") final UUID userBId) {
+		return new RelationResponse(this.userService.getRelationOfUsersById(userAId, userBId));
 	}
 	
 	@RequestMapping(value = "/users/{userId}/games", method = RequestMethod.GET)

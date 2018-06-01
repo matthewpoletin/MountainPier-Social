@@ -112,14 +112,14 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void addFriendByIdToUserById(UUID userId, UUID friendId) {
+	public Relation addFriendByIdToUserById(UUID userId, UUID friendId) {
 		User user = this.getUserById(userId);
 		User friend = this.getUserById(friendId);
 		Relation relation = new Relation()
 			.setType("friend")
 			.setUserA(user)
 			.setUserB(friend);
-		this.relationRepository.save(relation);
+		return this.relationRepository.save(relation);
 	}
 	
 	@Override
@@ -128,6 +128,21 @@ public class UserServiceImpl implements UserService {
 		User user = this.getUserById(userId);
 		User friend = this.getUserById(friendId);
 		this.relationRepository.deleteRelationByUserAAndUserBAndType(user, friend, "friend");
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Relation getRelationOfUsersById(UUID userAId, UUID userBId) {
+		User userA = this.getUserById(userAId);
+		User userB = this.getUserById(userBId);
+		Relation relation = this.relationRepository.getRelationByUserAAndUserB(userA, userB);
+		if (relation == null) {
+			relation = new Relation()
+				.setUserA(userA)
+				.setUserB(userB)
+				.setType("none");
+		}
+		return relation;
 	}
 	
 	@Override

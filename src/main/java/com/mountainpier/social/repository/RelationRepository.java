@@ -9,5 +9,7 @@ public interface RelationRepository
 		extends JpaRepository<Relation, Integer> {
 	
 	void deleteRelationByUserAAndUserBAndType(User userA, User userB, String type);
+
+	Relation getRelationByUserAAndUserB(User userA, User userB);
 	
 }
