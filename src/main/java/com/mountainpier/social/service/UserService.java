@@ -19,6 +19,8 @@ public interface UserService {
 	void deleteUserById(UUID userId);
 	
 	Page<User> getFriendsOfUserById(UUID userId, Integer page, Integer size);
+	void addFriendByIdToUserById(UUID userId, UUID friendId);
+	void removeFriendByIdToUserById(UUID userId, UUID friendId);
 	
 	List<UUID> getGamesOfUserById(UUID userId);
 }

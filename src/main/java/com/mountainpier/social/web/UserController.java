@@ -103,6 +103,20 @@ public class UserController {
 			.map(UserResponse::new);
 	}
 	
+	@RequestMapping(value = "/users/{userId}/friends/{friendId}", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
+	public void addFriendByIdToUserById(@PathVariable("userId") final UUID userId,
+										@PathVariable("friendId") final UUID friendId) {
+		this.userService.addFriendByIdToUserById(userId, friendId);
+	}
+	
+	@RequestMapping(value = "/users/{userId}/friends/{friendId}", method = RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeFriendByIdToUserById(@PathVariable("userId") final UUID userId,
+										@PathVariable("friendId") final UUID friendId) {
+		this.userService.removeFriendByIdToUserById(userId, friendId);
+	}
+	
 	@RequestMapping(value = "/users/{userId}/games", method = RequestMethod.GET)
 	public List<UUID> getGamesOfUserById(@PathVariable("userId") final UUID userId,
 										 @RequestParam(value = "page", required = false) Integer page,

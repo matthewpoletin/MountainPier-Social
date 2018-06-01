@@ -4,6 +4,7 @@ import com.mountainpier.social.domain.Collection;
 import com.mountainpier.social.domain.Relation;
 import com.mountainpier.social.domain.User;
 import com.mountainpier.social.repository.CollectionRepository;
+import com.mountainpier.social.repository.RelationRepository;
 import com.mountainpier.social.repository.UserRepository;
 import com.mountainpier.social.web.model.UserRequest;
 
@@ -23,11 +24,15 @@ public class UserServiceImpl implements UserService {
 	
 	private final UserRepository userRepository;
 	private final CollectionRepository collectionRepository;
+	private final RelationRepository relationRepository;
 	
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository, CollectionRepository collectionRepository) {
+	public UserServiceImpl(UserRepository userRepository,
+						   CollectionRepository collectionRepository,
+						   RelationRepository relationRepository) {
 		this.userRepository = userRepository;
 		this.collectionRepository = collectionRepository;
+		this.relationRepository = relationRepository;
 	}
 	
 	@Override
@@ -103,6 +108,26 @@ public class UserServiceImpl implements UserService {
 				friends.add(relation.getUserB());
 		});
 		return new PageImpl<>(friends, PageRequest.of(page, size), friends.size());
+	}
+	
+	@Override
+	@Transactional
+	public void addFriendByIdToUserById(UUID userId, UUID friendId) {
+		User user = this.getUserById(userId);
+		User friend = this.getUserById(friendId);
+		Relation relation = new Relation()
+			.setType("friend")
+			.setUserA(user)
+			.setUserB(friend);
+		this.relationRepository.save(relation);
+	}
+	
+	@Override
+	@Transactional
+	public void removeFriendByIdToUserById(UUID userId, UUID friendId) {
+		User user = this.getUserById(userId);
+		User friend = this.getUserById(friendId);
+		this.relationRepository.deleteRelationByUserAAndUserBAndType(user, friend, "friend");
 	}
 	
 	@Override
