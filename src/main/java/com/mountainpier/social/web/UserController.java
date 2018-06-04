@@ -84,7 +84,7 @@ public class UserController {
 	
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.PATCH)
 	public UserResponse updateUser(@PathVariable("userId") final UUID userId,
-								   @RequestBody @Valid UserRequest userRequest) {
+								   @RequestBody UserRequest userRequest) {
 		return new UserResponse(userService.updateUserById(userId, userRequest));
 	}
 
@@ -96,10 +96,8 @@ public class UserController {
 	
 	@RequestMapping(value = "/users/{userId}/friends", method = RequestMethod.GET)
 	public Page<UserResponse> getFriendsOfUserById(@PathVariable("userId") final UUID userId,
-												   @RequestParam(value = "page", required = false) Integer page,
-												   @RequestParam(value = "size", required = false) Integer size) {
-		page = page != null ? page : 0;
-		size = size != null ? size : 25;
+												   @RequestParam(value = "page", defaultValue = "0") Integer page,
+												   @RequestParam(value = "size", defaultValue = "25") Integer size) {
 		return userService.getFriendsOfUserById(userId, page, size)
 			.map(UserResponse::new);
 	}
@@ -126,10 +124,8 @@ public class UserController {
 	
 	@RequestMapping(value = "/users/{userId}/games", method = RequestMethod.GET)
 	public List<UUID> getGamesOfUserById(@PathVariable("userId") final UUID userId,
-										 @RequestParam(value = "page", required = false) Integer page,
-										 @RequestParam(value = "size", required = false) Integer size) {
-		page = page != null ? page : 0;
-		size = size != null ? size : 25;
+										 @RequestParam(value = "page", defaultValue = "0") Integer page,
+										 @RequestParam(value = "size", defaultValue = "25") Integer size) {
 		return this.userService.getGamesOfUserById(userId);
 	}
 	

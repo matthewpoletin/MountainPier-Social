@@ -24,10 +24,8 @@ public class GameController {
 	
 	@RequestMapping(value = "/games/{gameId}/users", method = RequestMethod.GET)
 	public Page<UserResponse> getOwnersOfGameById(@PathVariable("gameId") final UUID gameId,
-												  @RequestParam(value = "page", required = false) Integer page,
-												  @RequestParam(value = "size", required = false) Integer size) {
-		page = page != null ? page : 0;
-		size = size != null ? size : 25;
+												  @RequestParam(value = "page", defaultValue = "0") Integer page,
+												  @RequestParam(value = "size", defaultValue = "25") Integer size) {
 		return collectionService.getOwnersOfGameById(gameId, page, size)
 			.map(UserResponse::new);
 	}
