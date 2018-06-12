@@ -35,7 +35,7 @@ public class User {
 	@Column(name = "users_reg_email", unique = true)
 	private String regEmail;
 	
-	@Column(name = "users_reg_date")
+	@Column(name = "users_reg_date", nullable = false)
 	private Date regDate;
 	
 	@Column(name = "users_status")

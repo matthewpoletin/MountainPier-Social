@@ -34,11 +34,9 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
-	public Page<UserResponse> getUsers(@RequestParam(value = "page", required = false) Integer page,
-									   @RequestParam(value = "size", required = false) Integer size,
+	public Page<UserResponse> getUsers(@RequestParam(value = "page", defaultValue = "0") Integer page,
+									   @RequestParam(value = "size", defaultValue = "25") Integer size,
 									   @RequestParam(value = "username", required = false) String username) {
-		page = page != null ? page : 0;
-		size = size != null ? size : 25;
 		Page<User> userPage;
 		if (username != null) userPage = userService.getUsersWithUsername(username, page, size);
 		else userPage = userService.getUsers(page, size);
@@ -48,7 +46,7 @@ public class UserController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(value = "/users", method = RequestMethod.POST)
-	public UserResponse createUser(@Valid @RequestBody UserRequest userRequest,
+	public UserResponse createUser(@RequestBody @Valid UserRequest userRequest,
 								   HttpServletResponse response) {
 		User user = userService.createUser(userRequest);
 		response.addHeader(HttpHeaders.LOCATION, userBaseURI + "/users/" + user.getId().toString());

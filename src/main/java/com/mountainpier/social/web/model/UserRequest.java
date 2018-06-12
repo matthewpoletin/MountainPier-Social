@@ -3,6 +3,7 @@ package com.mountainpier.social.web.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -17,6 +18,7 @@ public class UserRequest {
 	
 	private String avatar;
 	
+	@NotNull(message = "regDate not set")
 	private Date regDate;
 	
 	private String status;
